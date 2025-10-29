@@ -3,7 +3,7 @@ import { redisConnection } from '@config/redis';
 import { QUEUES, TradeSyncJobData } from '../queue.config';
 import { prisma } from '@config/database';
 import { brokerServiceClient } from '@shared/clients/broker-service.client';
-import { decrypt } from '@shared/utils/encryption';
+import { encryptionService } from '@shared/services/encryption.service'; // ✅ FIX: Use this instead
 
 export function createTradeSyncWorker() {
   const worker = new Worker<TradeSyncJobData>(
@@ -31,7 +31,10 @@ export function createTradeSyncWorker() {
           throw new Error('Broker account not found');
         }
 
-        const credentials = JSON.parse(decrypt(account.encryptedCredentials));
+        // ✅ FIX: Use encryptionService.decrypt() instead of decrypt()
+        const credentials = JSON.parse(
+          encryptionService.decrypt(account.encryptedCredentials)
+        );
 
         // Update job progress
         await job.updateProgress(10);

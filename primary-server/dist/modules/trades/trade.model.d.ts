@@ -1,0 +1,1 @@
+//# sourceMappingURL=trade.model.d.ts.map
